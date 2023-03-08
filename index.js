@@ -17,7 +17,7 @@ class ExpenseType{
 }
 
 class ExpenseService{
-    static url = 'https://6408aaf72f01352a8a9a1f28.mockapi.io/';
+    static url = 'https://6408aaf72f01352a8a9a1f28.mockapi.io/expenses';
 
     static getAllExpenses(){
         return $.get(this.url);
