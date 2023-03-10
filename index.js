@@ -119,22 +119,25 @@ class DOMManager{
         $('#app').empty();
         for(let expense of expenses){
             $('#app').prepend(
-                `<div id="${expense._id}" class="card" id="form-expense-type">
+                `<div id="${expense._id}" class="card" id="card-background">
                     <div class="card-header">
                         <h2>${expense.name}</h2>
-                        <button class="btn btn-danger" onclick="DOMManager.deleteExpense('${expense._id}')">Delete</button>
+                        <br>
+                        <button class="button-51- form-control" onclick="DOMManager.deleteExpense('${expense._id}')">Delete</button>
                     </div>
                     <div class="card-body">
                         <div class="card">
                             <div class="row">
                                 <div class="col-sm">
                                     <input type="text" id="${expense._id}-expenseType-name" class="form-control" placeholder="Expense Name">
+                                    <br>
                                 </div>
+                                
                                 <div class="col-sm">
                                 <input type="text" id="${expense._id}-expenseType-expenseDescription" class="form-control" placeholder="Expense Description">
                                 </div>
                             </div>
-                            <button id="${expense._id}-new-expense" onclick="DOMManager.addExpenseType('${expense._id}')" class="btn btn-primary form-control">Add New Expense</button>
+                            <button id="${expense._id}-new-expense" onclick="DOMManager.addExpenseType('${expense._id}')" class="button-51 form-control">Add New Expense</button>
                         </div>
                     </div>
                 </div><br>`
@@ -145,7 +148,7 @@ class DOMManager{
                     `<p>
                     <span id="name-${expenseType._id}"><strong>Name: </strong> ${expenseType.name}</span>
                     <span id="name-${expenseType._id}"><strong>Expense Description: </strong> ${expenseType.expenseDescription}</span>
-                    <button class="btn btn-danger" onclick="DOMManager.deleteExpenseType('${expense._id}', '${expenseType.id}')">Delete Expense</button>`
+                    <button class="button-51 form-control" onclick="DOMManager.deleteExpenseType('${expense._id}', '${expenseType.id}')">Delete Expense</button>`
                 )
             }
         }

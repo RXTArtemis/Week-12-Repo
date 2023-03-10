@@ -9,10 +9,23 @@ h1,h2{
     color:#5b1583;
 }
 
+.card{
+    background-color:#d1e1f5;
+    padding: 2rem;
+    margin: 1rem;
+   
+}
+.card-header{
+    background-color: #f8b8d3;
+    padding: 2rem;
+}
+.card-body{
+    background-color:#f8b8d3;
+}
 
 .button-51 {
-  background-color: transparent;
-  border: 1px solid #266DB6;
+  background-color:#35bbf0 ;
+  border: 1px solid #5b1583;
   box-sizing: border-box;
   color: #5b1583;
   font-family: 'Itim', cursive;;
