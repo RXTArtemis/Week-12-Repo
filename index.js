@@ -1,21 +1,21 @@
 class Expense{
     constructor(name){
         this.name = name;
-        this.expenseType = [];
+        this.expenseTypes = [];
     }
-
-    addExpense(name, type){
-        this.expenseType.push(new ExpenseType(name,type));
+//expense and type. Type is either transaction expense, investments expense or savings expense
+    addExpense(name, expenseDescription){
+        this.expenseTypes.push(new ExpenseType(name,expenseDescription));
     }
 }
-
+//expense description is the reason for transaction or expense. Like vacation fund, college fund, bill payment
 class ExpenseType{
-    constructor(name, type){
+    constructor(name, expenseDescription){
         this.name = name;
-        this.type = type;
+        this.expenseDescription = this.expenseDescription;
     }
 }
-
+//check root url. Ask if its correct
 class ExpenseService{
     static url = 'https://6408aaf72f01352a8a9a1f28.mockapi.io/expenses';
 
@@ -24,7 +24,7 @@ class ExpenseService{
     }
 
     static getSpecificExpense(id){
-        return $.get(this.url +`/${id}` );
+        return $.get(this.url +`/${id}`);
     }
 
     static createExpense(expense){
@@ -33,9 +33,9 @@ class ExpenseService{
 
     static updateExpense(expense){
         return $.ajax({
-            url: this.url + `/${house._id}`,
+            url: this.url + `/${expense._id}`,
             dataType: 'json',
-            data:JSON.stringify(expense),
+            data: JSON.stringify(expense),
             contentType: 'application/json',
             type: 'PUT'
         });
@@ -44,7 +44,7 @@ class ExpenseService{
     static deleteExpense(id){
         return $.ajax({
             url:this.url + `/${id}`,
-            type: 'Delete'
+            type: 'DELETE'
         });
     }
 }
@@ -52,8 +52,9 @@ class ExpenseService{
 class DOMManager{
     static expenses;
 
+    //fix arrow function
     static getAllExpenses(){
-        ExpenseService.getAllExpenses().then(houses => this.render(expenses)); 
+        ExpenseService.getAllExpenses().then(expenses => this.render(expenses)); 
     }
 
     static createExpense(name){
@@ -75,7 +76,7 @@ class DOMManager{
     static addExpense(id){
         for(let expense of this.expenses){
             if(expense._id == id){
-                expense.expenseTypes.push(new ExpenseType($(`#${expenses._id}-expenseType-name`).val(), $(`#${expenses._id}-expenseType-type`).val()));
+                expense.expenseTypes.push(new ExpenseType($(`#${expense._id}-expenseType-name`).val(), $(`#${expense._id}-expenseType-expenseDescription`).val()));
                 ExpenseService.updateExpense(expense)
                     .then(()=>{
                         return ExpenseService.getAllExpenses();
@@ -84,13 +85,14 @@ class DOMManager{
                 }
             }
         }
-
-    static deleteExpense(expenseId, expenseTypeId){
+        
+//double check this method
+    static deleteExpenseType(expenseId, expenseTypeId){
         for(let expense of this.expenses){
             if(expense._id == expenseId){
                 for(let expenseType of expense.expenseTypes){
                     if(expenseType._id == expenseTypeId){
-                        expense.expenseTypes.splice(expense.expenseTypes.indexOf(room), 1);
+                        expense.expenseTypes.splice(expense.expenseTypes.indexOf(expenseType), 1);
                         ExpenseService.updateExpense(expense)
                         .then(()=>{
                             return ExpenseService.getAllExpenses();
@@ -103,9 +105,9 @@ class DOMManager{
     }
 
     static render(expenses){
-        this.houses = houses;
-        $('app').empty();
-        for(let expenses of expenses){
+        this.expenses = expenses;
+        $('#app').empty();
+        for(let expense of expenses){
             $('#app').prepend(
                 `<div id="${expense._id}" class="card">
                     <div class="card-header">
@@ -119,10 +121,10 @@ class DOMManager{
                                     <input type="text" id="${expense._id}-expenseType-name" class="form-control" placeholder="Expense Name">
                                 </div>
                                 <div class="col-sm">
-                                <input type="text" id="${expense._id}-expenseType-type" class="form-control" placeholder="Expense Type">
+                                <input type="text" id="${expense._id}-expenseType-expenseDescription" class="form-control" placeholder="Expense Description">
                                 </div>
                             </div>
-                            <button id="${expense._id}-new-expense" onclick="DOMManager.addExpenseType('${expense._id}')" class="btn btn-primary form-control">Add</button>
+                            <button id="${expense._id}-new-expense" onclick="DOMManager.addExpenseType('${expense._id}')" class="btn btn-primary form-control">Add New Expense</button>
                         </div>
                     </div>
                 </div><br>`
@@ -131,9 +133,8 @@ class DOMManager{
                 $(`#${expense._id}`).find('.card-body').append(
                     `<p>
                     <span id="name-${expenseType._id}"><strong>Name: </strong> ${expenseType.name}</span>
-                    <span id="name-${expenseType._id}"><strong>Type: </strong> ${expenseType.type}</span>
-                    <button class="btn btn-danger" onclick="DOMManager.deleteExpenseType('${expense._id}', '${expenseType._id}')">Delete Expense</button>
-                    </p>`
+                    <span id="name-${expenseType._id}"><strong>Expense Description: </strong> ${expenseType.expenseDescription}</span>
+                    <button class="btn btn-danger" onclick="DOMManager.deleteExpenseType('${expense._id}', '${expenseDescription._id}')">Delete Expense</button>`
                 )
             }
         }
@@ -143,6 +144,6 @@ class DOMManager{
 $('#create-new-expense').click(()=>{
     DOMManager.createExpense($('#new-expense-name').val());
     $('#new-expense-name').val('');
-})
+});
 
 DOMManager.getAllExpenses();
