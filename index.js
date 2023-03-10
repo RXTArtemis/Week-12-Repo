@@ -10,17 +10,21 @@ class Expense{
 }
 //expense description is the reason for transaction or expense. Like vacation fund, college fund, bill payment
 class ExpenseType{
+    static counter = 0;
     constructor(name, expenseDescription){
         this.name = name;
-        this.expenseDescription = this.expenseDescription;
+        this.expenseDescription = expenseDescription;
+        this.id = ExpenseType.counter++;
     }
 }
 //check root url. Ask if its correct
 class ExpenseService{
-    static url = 'https://6408aaf72f01352a8a9a1f28.mockapi.io/expenses';
+    static url = 'https://6408aaf72f01352a8a9a1f28.mockapi.io/Expenses';
 
     static getAllExpenses(){
-        return $.get(this.url);
+        let data = $.get(this.url);
+        console.log(data);
+        return data;
     }
 
     static getSpecificExpense(id){
@@ -73,9 +77,11 @@ class DOMManager{
         .then((expenses)=> this.render(expenses));
     }
 
-    static addExpense(id){
+    static addExpenseType(id){
         for(let expense of this.expenses){
+            console.log(expense);
             if(expense._id == id){
+                console.log(expense._id, id);
                 expense.expenseTypes.push(new ExpenseType($(`#${expense._id}-expenseType-name`).val(), $(`#${expense._id}-expenseType-expenseDescription`).val()));
                 ExpenseService.updateExpense(expense)
                     .then(()=>{
@@ -89,9 +95,13 @@ class DOMManager{
 //double check this method
     static deleteExpenseType(expenseId, expenseTypeId){
         for(let expense of this.expenses){
+            console.log(expense)
             if(expense._id == expenseId){
+                console.log(expense._id, expenseId)
                 for(let expenseType of expense.expenseTypes){
-                    if(expenseType._id == expenseTypeId){
+                    console.log(expenseType)
+                    if(expenseType.id == expenseTypeId){
+                        console.log(expenseType.id)
                         expense.expenseTypes.splice(expense.expenseTypes.indexOf(expenseType), 1);
                         ExpenseService.updateExpense(expense)
                         .then(()=>{
@@ -109,7 +119,7 @@ class DOMManager{
         $('#app').empty();
         for(let expense of expenses){
             $('#app').prepend(
-                `<div id="${expense._id}" class="card">
+                `<div id="${expense._id}" class="card" id="form-expense-type">
                     <div class="card-header">
                         <h2>${expense.name}</h2>
                         <button class="btn btn-danger" onclick="DOMManager.deleteExpense('${expense._id}')">Delete</button>
@@ -130,11 +140,12 @@ class DOMManager{
                 </div><br>`
             );
             for(let expenseType of expense.expenseTypes){
+                console.log(expenseType);
                 $(`#${expense._id}`).find('.card-body').append(
                     `<p>
                     <span id="name-${expenseType._id}"><strong>Name: </strong> ${expenseType.name}</span>
                     <span id="name-${expenseType._id}"><strong>Expense Description: </strong> ${expenseType.expenseDescription}</span>
-                    <button class="btn btn-danger" onclick="DOMManager.deleteExpenseType('${expense._id}', '${expenseDescription._id}')">Delete Expense</button>`
+                    <button class="btn btn-danger" onclick="DOMManager.deleteExpenseType('${expense._id}', '${expenseType.id}')">Delete Expense</button>`
                 )
             }
         }
